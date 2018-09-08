@@ -1,0 +1,157 @@
+{% extends 'base.html' %}
+{% block customcss %}
+    <style>
+    .layui-row-chc{width: 100%}
+    .manage-left{background: #fff;height: 200px;width: 20%;float: left;}
+    .manage-right{background: #fff;width: 79%;float: right;}
+    ul{list-style: none}
+    .lay-blog .container-wrap{height: 840px!important;}
+    .chc-manage-items{padding-left: 22%;line-height: 34px;padding-top: 11px;}
+    .chc-manage-items li{color: #666666;font-size: 16px; margin-top: 10px;}
+    .chc-manage-items li:hover{color: #1e9fff;}
+    .chc-manage-items-this{border-left: 5px solid #1e9fff;color: #1e9fff!important;padding-left: 4px!important;font-weight: bold}
+    .chc-manage-submit{float: right;margin-top: 12px;margin-bottom: 10px;margin-right: 10px;}
+    </style>
+{% endblock %}
+{% block content %}
+    <div class="container-wrap">
+			<div class="container">
+					<div class="contar-wrap">
+                        <h4 class="item-title">
+							<p><i class="layui-icon layui-icon-set"></i>配置：<span>后台管理</span></p>
+						</h4>
+                        <div class="layui-row-chc ">
+                            <div class="manage-left" >
+                                <div>
+                                    <ul class="chc-manage-items">
+                                        <li class="chc-manage-items-this publish-article">发布文章</li>
+                                        <li class="publish-broadcost">发布公告</li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="manage-right">
+                                <div class="chc-manage-publish-article">
+                                    <form class="layui-form" action="">
+                                          <div class="layui-form-item">
+                                            <label class="layui-form-label">
+                                                <button type="button" class="layui-btn layui-btn-normal" id="uploadid" style="margin-top: 15px">上传图片</button>
+                                            </label>
+                                            <div class="layui-input-block">
+                                                <div class="layui-upload">
+
+                                                  <div class="layui-upload-list" style="float: right;margin-right: 20%">
+                                                    <img class="layui-upload-img" id="demo1" style="height: 70px;width: 70px">
+                                                    <p id="demoText"></p>
+                                                  </div>
+                                                </div>
+                                            </div>
+                                          </div>
+                                          <div class="layui-form-item">
+                                            <textarea class="layui-textarea" id="LAY_demo1" style="display: none">
+                                              请输入文章内容
+                                            </textarea>
+                                          </div>
+
+                                    <button class="layui-btn layui-btn-normal chc-manage-submit" type="submit">发布</button>
+                                    </form>
+                                </div>
+                                <div class="chc-manage-publish-broadcast" style="display: none">
+                                    <form class="layui-form" action="">
+                                          <div class="layui-form-item">
+                                            公告内容：
+
+                                          </div>
+                                          <div class="layui-form-item">
+                                            <textarea placeholder="请输入公告内容！" class="layui-textarea"></textarea>
+                                          </div>
+
+                                    <button class="layui-btn layui-btn-normal chc-manage-submit" type="submit">发布</button>
+                                    </form>
+                                </div>
+
+                            </div>
+                        </div>
+
+					</div>
+
+			</div>
+		</div>
+{% endblock %}
+{% block customjs %}
+<script>
+layui.use(['layedit','upload'], function(){
+  var layedit = layui.layedit
+  ,$ = layui.jquery
+  ,upload = layui.upload;
+
+  //普通图片上传
+  var uploadInst = upload.render({
+    elem: '#uploadid'
+    ,url: '/upload/'
+    ,before: function(obj){
+      //预读本地文件示例，不支持ie8
+      obj.preview(function(index, file, result){
+        $('#demo1').attr('src', result); //图片链接（base64）
+      });
+    }
+    ,done: function(res){
+      //如果上传失败
+      if(res.code > 0){
+        return layer.msg('上传失败');
+      }
+      //上传成功
+    }
+    ,error: function(){
+      //演示失败状态，并实现重传
+      var demoText = $('#demoText');
+      demoText.html('<span style="color: #FF5722;">上传失败</span> <a class="layui-btn layui-btn-xs demo-reload">重试</a>');
+      demoText.find('.demo-reload').on('click', function(){
+        uploadInst.upload();
+      });
+    }
+  });
+  //构建一个默认的编辑器
+  var index = layedit.build('LAY_demo1');
+
+  //编辑器外部操作
+  var active = {
+    content: function(){
+      alert(layedit.getContent(index)); //获取编辑器内容
+    }
+    ,text: function(){
+      alert(layedit.getText(index)); //获取编辑器纯文本内容
+    }
+    ,selection: function(){
+      alert(layedit.getSelection(index));
+    }
+  };
+
+  $('.site-demo-layedit').on('click', function(){
+    var type = $(this).data('type');
+    active[type] ? active[type].call(this) : '';
+  });
+
+  //自定义工具栏
+  layedit.build('LAY_demo2', {
+    tool: ['face', 'link', 'unlink', '|', 'left', 'center', 'right']
+    ,height: 100
+  });
+    $(".publish-article").on("click",function () {
+        var that=this;
+        $(".chc-manage-publish-article").css("display","block");
+        $(".chc-manage-publish-broadcast").css("display","none");
+        $(that).siblings('li').removeClass("chc-manage-items-this");
+        $(that).addClass("chc-manage-items-this");
+    });
+    $(".publish-broadcost").on("click",function () {
+        var that=this;
+        $(".chc-manage-publish-article").css("display","none");
+        $(".chc-manage-publish-broadcast").css("display","block");
+        $(that).siblings('li').removeClass("chc-manage-items-this");
+        $(that).addClass("chc-manage-items-this");
+    });
+
+});
+</script>
+{% endblock %}
+
