@@ -21,7 +21,9 @@ urlpatterns = [
     path('manage/', views.manage),
     path('index/', views.index),
     path('about/', views.about),
+    path('article/', views.article),
     path('message/', views.messageBoard),
+    path('broadcast/', views.broadcast),
     path('comment/', views.comment),
     path('article/<int:articleid>.html', views.details),
 ]

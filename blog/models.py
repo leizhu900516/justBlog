@@ -15,7 +15,20 @@ class Article(models.Model):
     class Meta:
         db_table = "article"
     def get_format_date(self):
-        return time.strftime("%Y-%m-%d %H:%M:%S",time.localtime(self.addtimes))
+        '''
+        时间转换函数
+        :param addtime:
+        :return:
+        '''
+        localtime = time.time()
+        print(localtime - self.addtimes)
+        if localtime - self.addtimes < 3600:
+            return '{m}分钟前'.format(m=int((localtime - self.addtimes) / 60))
+        if 3600 < localtime - self.addtimes < 86400:
+            return '{h}小时前'.format(h=int((localtime - self.addtimes) / 3600))
+        if 86400 < localtime - self.addtimes < 604800:
+            return '{h}天前'.format(h=int((localtime - self.addtimes) / 86400))
+        return time.strftime("%Y-%m-%d %H:%M", time.localtime(self.addtimes))
 
 class Broadcast(models.Model):
     id = models.AutoField(primary_key=True)

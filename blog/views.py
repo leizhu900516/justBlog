@@ -1,5 +1,8 @@
-from django.shortcuts import render,render_to_response,redirect
+from django.shortcuts import render_to_response
 from blog.models import Broadcast,Article,Message,User
+from django.http import JsonResponse,Http404
+from django.views.decorators.csrf import csrf_exempt
+import time
 # Create your views here.
 
 
@@ -32,10 +35,39 @@ def messageBoard(request):
     :return:
     '''
     limit = 2
-    page = request.GET.get("page",1)
-    messages = Message.objects.order_by("-addtimes").all()[(page-1)*limit:page*limit]
-    return render_to_response('message.html',locals())
-
+    method = request.method
+    if method == "GET":
+        page = request.GET.get("page",1)
+        messages = Message.objects.order_by("-addtimes").all()[(page-1)*limit:page*limit]
+        return render_to_response('message.html',locals())
+    elif method == "POST":
+        data = {}
+        message = request.POST.get("message")
+        return JsonResponse(data)
+@csrf_exempt
+def broadcast(request):
+    '''
+    广播修改
+    :param request:
+    :return:
+    '''
+    data={}
+    if request.method == "POST":
+        _broadcast = request.POST.get("broadcast")
+        if _broadcast:
+            b = Broadcast.objects.create(
+                content=_broadcast,
+                addtimes=int(time.time())
+            )
+            b.save()
+            data['code'] = 0
+            data['msg'] = ""
+        else:
+            data['code'] = 1
+            data['msg'] = "广播内容不能为空"
+        return JsonResponse(data)
+    else:
+        raise Http404
 def details(request,articleid):
     '''
     博文详情页
@@ -54,3 +86,19 @@ def page_not_found(request):
 
 def comment(request):
     return render_to_response('comment.html',locals())
+
+def article(request):
+    '''
+    文章的增、删、改
+    :param request:
+    :return:
+    '''
+    data={}
+    method=request.method
+    if method == "POST":
+        #增加
+        pass
+    if method == "DELETE":
+        #删除
+        pass
+    return JsonResponse(data)
