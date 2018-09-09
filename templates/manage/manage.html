@@ -26,6 +26,7 @@
                                     <ul class="chc-manage-items">
                                         <li class="chc-manage-items-this publish-article">发布文章</li>
                                         <li class="publish-broadcost">发布公告</li>
+                                        <li class="article-manage">文章管理</li>
                                     </ul>
                                 </div>
                             </div>
@@ -52,20 +53,20 @@
                                             </textarea>
                                           </div>
 
-                                    <button class="layui-btn layui-btn-normal chc-manage-submit" type="submit">发布</button>
+                                    <button class="layui-btn layui-btn-normal chc-manage-submit" lay-submit="" lay-filter="articlesubmit">发布</button>
                                     </form>
                                 </div>
                                 <div class="chc-manage-publish-broadcast" style="display: none">
-                                    <form class="layui-form" action="">
-                                          <div class="layui-form-item">
+                                    <form class="layui-form" action="" onsubmit="return false">
+                                          <div class="layui-form-item" style="color: #666666;padding: 10px;font-size: 16px;">
                                             公告内容：
 
                                           </div>
                                           <div class="layui-form-item">
-                                            <textarea placeholder="请输入公告内容！" class="layui-textarea"></textarea>
+                                            <textarea placeholder="请输入公告内容！" class="layui-textarea" name="broadcast"></textarea>
                                           </div>
 
-                                    <button class="layui-btn layui-btn-normal chc-manage-submit" type="submit">发布</button>
+                                          <button class="layui-btn layui-btn-normal chc-manage-submit" lay-submit="" lay-filter="broadcastsubmit">发布</button>
                                     </form>
                                 </div>
 
@@ -79,15 +80,17 @@
 {% endblock %}
 {% block customjs %}
 <script>
-layui.use(['layedit','upload'], function(){
+layui.use(['layedit','upload','form','layer'], function(){
   var layedit = layui.layedit
   ,$ = layui.jquery
+  ,form = layui.form
+  ,layer = layui.layer
   ,upload = layui.upload;
 
   //普通图片上传
   var uploadInst = upload.render({
     elem: '#uploadid'
-    ,url: '/upload/'
+    ,url: '/manage/upload/'
     ,before: function(obj){
       //预读本地文件示例，不支持ie8
       obj.preview(function(index, file, result){
@@ -151,6 +154,43 @@ layui.use(['layedit','upload'], function(){
         $(that).addClass("chc-manage-items-this");
     });
 
+    {#$(".chc-manage-items li").on("click",function () {#}
+    {#    var that = this;#}
+    {#    $(that).siblings("li").css("display","none");#}
+    {#    $(that).css("display","block");#}
+    {#    $(that).siblings('li').removeClass("chc-manage-items-this");#}
+    {#    $(that).addClass("chc-manage-items-this");#}
+    {#});#}
+  form.on('submit(broadcastsubmit)', function(data){
+      $.ajax({
+          url:"/broadcast/",
+          type:"post",
+          data:data.field,
+          dataType: "json",
+          success:function (data) {
+              console.log(data)
+              if(data.code == 0){
+                  layer.msg('修改成功');
+              }
+          }
+      })
+    return false;
+  });
+  form.on('submit(articlesubmit)', function(data){
+      $.ajax({
+          url:"/article/",
+          type:"post",
+          data:data.field,
+          dataType: "json",
+          success:function (data) {
+              console.log(data)
+              if(data.code == 0){
+                  layer.msg('修改成功');
+              }
+          }
+      })
+    return false;
+  });
 });
 </script>
 {% endblock %}
