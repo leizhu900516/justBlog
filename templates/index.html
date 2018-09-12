@@ -11,8 +11,8 @@
 							<div class="item-box  layer-photos-demo1 layer-photos-demo">
 								<h3><a href="/article/{{ i.id }}.html">{{ i.title }}</a></h3>
 								<h5>发布于：<span>{{ i.get_format_date }}</span></h5>
-                                <p>{{ i.content }}</p>
-								<img src="../static/static/images/item.png" alt="">
+                                <p>{% autoescape off%}{{ i.content }}{% endautoescape %}</p>
+								<img src="{{ i.coverimg }}" alt="" style="height: 200px;">
 							</div>
 							<div class="comment count">
 								<a href="details.html#comment">评论</a>

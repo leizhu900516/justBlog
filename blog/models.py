@@ -6,12 +6,13 @@ import time
 class Article(models.Model):
     id=models.AutoField(help_text="自增id",primary_key=True)
     content=models.TextField(help_text="")
+    abstract=models.TextField(help_text="")
     title = models.CharField(max_length=255,help_text="")
-    addtimes = models.IntegerField(max_length=10,help_text="")
-    zan_sum = models.IntegerField(max_length=10,help_text="",default=0)
+    addtimes = models.IntegerField(help_text="")
+    zan_sum = models.IntegerField(help_text="",default=0)
     authorid  = models.IntegerField(help_text="")
     coverimg = models.CharField(max_length=255,help_text="封面")
-
+    status = models.SmallIntegerField(help_text="",default=0)
     class Meta:
         db_table = "article"
     def get_format_date(self):
@@ -43,7 +44,7 @@ class Message(models.Model):
     content = models.TextField(help_text="")
     addtimes = models.IntegerField(help_text="")
     authorid = models.IntegerField(help_text="")
-    zan_sum = models.IntegerField(help_text="")
+    zan_sum = models.IntegerField(help_text="",default=0)
     class Meta:
         db_table = "message"
 
@@ -56,11 +57,3 @@ class User(models.Model):
     img = models.CharField(max_length=100,help_text="")
     class Meta:
         db_table = "user"
-    '''
-  `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(100) DEFAULT NULL,
-  `addtimes` int(11) DEFAULT NULL,
-  `sex` tinyint(4) DEFAULT NULL,
-  `img` varchar(100) DEFAULT NULL,
-    
-    '''

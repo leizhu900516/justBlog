@@ -1,8 +1,13 @@
 from django.shortcuts import render_to_response
 from blog.models import Broadcast,Article,Message,User
-from django.http import JsonResponse,Http404
+from django.http import JsonResponse,Http404,QueryDict
 from django.views.decorators.csrf import csrf_exempt
 import time
+from django.core.files.storage import default_storage
+from django.core.files.base import ContentFile
+import uuid
+import os
+
 # Create your views here.
 
 
@@ -27,7 +32,7 @@ def index(request):
 
     return render_to_response('index.html',locals())
 
-
+@csrf_exempt
 def messageBoard(request):
     '''
     留言板
@@ -43,6 +48,14 @@ def messageBoard(request):
     elif method == "POST":
         data = {}
         message = request.POST.get("message")
+        mess = Message.objects.create(
+            content=message,
+            addtimes=int(time.time()),
+            authorid=1,
+        )
+        mess.save()
+        data['code'] = 0
+        data['msg'] = ""
         return JsonResponse(data)
 @csrf_exempt
 def broadcast(request):
@@ -86,7 +99,7 @@ def page_not_found(request):
 
 def comment(request):
     return render_to_response('comment.html',locals())
-
+@csrf_exempt
 def article(request):
     '''
     文章的增、删、改
@@ -97,8 +110,71 @@ def article(request):
     method=request.method
     if method == "POST":
         #增加
-        pass
+        params = request.POST
+        articleobj=Article.objects.create(
+            title=params.get('title'),
+            abstract=params.get('abstract'),
+            content=params.get("content"),
+            addtimes=int(time.time()),
+            coverimg=params.get("coverimg"),
+            authorid=1,
+        )
+        articleobj.save()
+        data['code'] = 0
+        data['msg'] = ""
     if method == "DELETE":
+        params = QueryDict(request.body)
         #删除
-        pass
+        Article.objects.get(id=params.get("id")).delete()
+        data['code'] = 0
+        data['msg'] = ""
+    return JsonResponse(data)
+@csrf_exempt
+def upload(request):
+    '''
+    图片上传
+    :param request:
+    :return:
+    '''
+    data = {}
+    images = request.FILES.get("file")
+    storage_dir = "/data/media/upload/photo/"
+    # imagepath = '/'.join(os.path.dirname(os.path.abspath(__file__)).split('/')[:-1])
+    if not os.path.exists(storage_dir):
+        os.makedirs(storage_dir)
+    img = '{0}{1}.{2}'.format(storage_dir,uuid.uuid1(), images.name.split('.')[-1])
+    try:
+        with open(img,'wb') as f:
+            f.write(images.read())
+        # path = default_storage.save(img, ContentFile(images.read()))
+        # tmp_file = os.path.join(imagepath + path)
+    except Exception as e:
+        data['code'] = 1
+        data['msg'] = str(e)
+    else:
+        data['code'] = 0
+        data['msg'] = ''
+    data.setdefault('data',{})['src'] = img
+    return JsonResponse(data)
+def articlelist(request):
+    '''
+    获取文章列表
+    :param request:
+    :return:
+    '''
+    data = {}
+    page = int(request.GET.get("page",1))
+    limit = int(request.GET.get("limit",10))
+    articles = Article.objects.filter(status=0).all()
+    pagedata=articles[(page-1)*limit:page*limit]
+    for i in pagedata:
+        data.setdefault("data",[]).append({
+            "id":i.id,
+            "title":i.title,
+            "addtimes":i.get_format_date()
+        })
+
+    data['code'] = 0
+    data['message'] = ""
+    data['count'] = articles.count()
     return JsonResponse(data)

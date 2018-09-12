@@ -22,6 +22,8 @@ urlpatterns = [
     path('index/', views.index),
     path('about/', views.about),
     path('article/', views.article),
+    path('upload/', views.upload),
+    path('article/list/', views.articlelist),
     path('message/', views.messageBoard),
     path('broadcast/', views.broadcast),
     path('comment/', views.comment),

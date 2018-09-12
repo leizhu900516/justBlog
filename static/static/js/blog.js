@@ -117,7 +117,7 @@ layui.define(['element', 'form','laypage','jquery','laytpl'],function(exports){
 
   // end点赞图标变身
 
-  //end 提交
+      //end 提交
   $('#item-btn').on('click', function(){
     var elemCont = $('#LAY-msg-content')
     ,content = elemCont.val();
@@ -131,19 +131,44 @@ layui.define(['element', 'form','laypage','jquery','laytpl'],function(exports){
     //模拟数据
     ,data = {
       username: '闲心'
-      ,avatar: '../res/static/images/info-img.png'
+      ,avatar: '../static/static/images/info-img.png'
       ,praise: 0
       ,content: content
     };
-
+    var html = '\t\t<div class="info-box">\n' +
+    '\t\t\t<div class="info-item">\n' +
+    '\t\t\t\t<img class="info-img" src="'+data.avatar+'" alt="">\n' +
+    '\t\t\t  <div class="info-text">\n' +
+    '\t\t\t\t\t<p class="title">\n' +
+    '\t\t\t\t\t  <span class="name">'+data.username+'</span>\n' +
+    '\t\t\t\t\t  <span class="info-img">\n' +
+    '\t\t\t\t\t  \t<i class="layui-icon layui-icon-praise"></i>\n' +
+    '\t\t\t\t\t  \t'+data.praise+'\n' +
+    '\t\t\t\t\t \t</span>\n' +
+    '\t\t\t\t\t</p>\n' +
+    '\t\t\t\t\t<p class="info-intr">\n' +
+    '\t\t\t\t\t\t'+content+'\n' +
+    '\t\t\t\t\t</p>\n' +
+    '\t\t\t  </div>\n' +
+    '\t\t\t</div>\n' +
+    '\t\t</div>'
     //模板渲染
-    laytpl(view).render(data, function(html){
-      $('#LAY-msg-box').prepend(html);
-      elemCont.val('');
-      layer.msg('留言成功', {
-        icon: 1
+      $.ajax({
+          url:"/message/",
+          type:"post",
+          data:{"message":content},
+          dataType: "json",
+          success:function (data) {
+              console.log(data)
+              if(data.code == 0){
+                $('#LAY-msg-box').prepend(html);
+                layer.msg('留言成功', {
+                  icon: 1
+                });
+              }
+          }
       })
-    });
+
 
   })
 
