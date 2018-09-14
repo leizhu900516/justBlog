@@ -1,0 +1,51 @@
+{% extends 'base.html' %}
+{% block customcss %}
+    <style>
+    .contar-wrap{background-color: #fff;padding: 20px}
+    .login{width: 400px;margin: 0 auto;    }
+    .login h3{text-align: center;color: #999;    margin-bottom: 23px;}
+    .layui-form-item .layui-input-inline {width: 279px!important;}
+    </style>
+{% endblock %}
+{% block content %}
+    <div class="container-wrap">
+			<div class="container">
+					<div class="contar-wrap">
+                        <div class="login">
+                            <h3>登录</h3>
+                            <form class="layui-form layui-form-pane" action="" >
+                              <div class="layui-form-item">
+                                <label class="layui-form-label">用户名</label>
+                                <div class="layui-input-inline">
+                                  <input type="text" name="username" lay-verify="title" placeholder="请输入用户名" autocomplete="off" class="layui-input">
+                                </div>
+                              </div>
+                              <div class="layui-form-item">
+                                <label class="layui-form-label">密码</label>
+                                <div class="layui-input-inline">
+                                  <input type="password" name="passwd" lay-verify="pass" placeholder="请输入密码" autocomplete="off" class="layui-input">
+                                </div>
+                              </div>
+                              <div class="layui-form-item">
+                                <div class="layui-inline">
+                                  <div class="layui-input-inline" style="width: 110px!important;">
+                                    <button class="layui-btn layui-btn-normal" lay-submit="" lay-filter="loginbtn">立即登录</button>
+                                  </div>
+                                </div>
+                                <div class="layui-inline">
+                                  <div class="layui-input-inline" style="width: 110px!important;">
+                                    <label>忘记密码？</label>
+                                  </div>
+                                </div>
+                              </div>
+                            </form>
+                        </div>
+
+					</div>
+			</div>
+		</div>
+{% endblock %}
+{% block customjs %}
+
+{% endblock %}
+

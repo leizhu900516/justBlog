@@ -18,14 +18,16 @@ from blog import views
 
 
 urlpatterns = [
-    path('manage/', views.manage),
-    path('index/', views.index),
-    path('about/', views.about),
-    path('article/', views.article),
-    path('upload/', views.upload),
-    path('article/list/', views.articlelist),
-    path('message/', views.messageBoard),
-    path('broadcast/', views.broadcast),
-    path('comment/', views.comment),
-    path('article/<int:articleid>.html', views.details),
+    path('manage/', views.manage),#后台管理
+    path('login/', views.login),#登录管理
+    path('index/', views.index), #主页
+    path('about/', views.about), #关于
+    path('article/', views.article), #文章api-restful
+    path('upload/', views.upload), #上传api
+    path('article/list/', views.articlelist), #文章列表api
+    path('message/', views.messageBoard),#留言api
+    path('broadcast/', views.broadcast), #公告api
+    path('comment/', views.comment), #评论api
+    path('article/<int:articleid>.html', views.details),#文章详情页
+    path('test/', views.test),
 ]

@@ -5,14 +5,14 @@ import time
 
 class Article(models.Model):
     id=models.AutoField(help_text="自增id",primary_key=True)
-    content=models.TextField(help_text="")
-    abstract=models.TextField(help_text="")
-    title = models.CharField(max_length=255,help_text="")
-    addtimes = models.IntegerField(help_text="")
-    zan_sum = models.IntegerField(help_text="",default=0)
-    authorid  = models.IntegerField(help_text="")
+    content=models.TextField(help_text="文章内容")
+    abstract=models.TextField(help_text="摘要")
+    title = models.CharField(max_length=255,help_text="标题")
+    addtimes = models.IntegerField(help_text="添加时间")
+    zan_sum = models.IntegerField(help_text="点赞数",default=0)
+    authorid  = models.IntegerField(help_text="作者id")
     coverimg = models.CharField(max_length=255,help_text="封面")
-    status = models.SmallIntegerField(help_text="",default=0)
+    status = models.SmallIntegerField(help_text="状态",default=0)
     class Meta:
         db_table = "article"
     def get_format_date(self):
@@ -22,7 +22,6 @@ class Article(models.Model):
         :return:
         '''
         localtime = time.time()
-        print(localtime - self.addtimes)
         if localtime - self.addtimes < 3600:
             return '{m}分钟前'.format(m=int((localtime - self.addtimes) / 60))
         if 3600 < localtime - self.addtimes < 86400:
@@ -33,27 +32,37 @@ class Article(models.Model):
 
 class Broadcast(models.Model):
     id = models.AutoField(primary_key=True)
-    content = models.TextField()
-    addtimes = models.IntegerField()
+    content = models.TextField(help_text='广播内容')
+    addtimes = models.IntegerField(help_text="添加时间")
 
     class Meta:
         db_table = "broadcast"
 
 class Message(models.Model):
     id = models.AutoField(primary_key=True)
-    content = models.TextField(help_text="")
-    addtimes = models.IntegerField(help_text="")
-    authorid = models.IntegerField(help_text="")
-    zan_sum = models.IntegerField(help_text="",default=0)
+    content = models.TextField(help_text="留言内容")
+    addtimes = models.IntegerField(help_text="添加时间")
+    authorid = models.IntegerField(help_text="作者id")
+    zan_sum = models.IntegerField(help_text="点赞数",default=0)
     class Meta:
         db_table = "message"
 
 
 class User(models.Model):
     id = models.AutoField(primary_key=True)
-    name = models.CharField(max_length=100,help_text="")
-    addtimes = models.IntegerField(help_text="")
-    sex = models.SmallIntegerField(help_text="")
-    img = models.CharField(max_length=100,help_text="")
+    name = models.CharField(max_length=100,help_text="姓名")
+    addtimes = models.IntegerField(help_text="添加时间")
+    sex = models.SmallIntegerField(help_text="性别")
+    img = models.CharField(max_length=100,help_text="头像")
+    passwd = models.CharField(max_length=100,help_text="密码")
+    level = models.SmallIntegerField(help_text="用户级别")
     class Meta:
         db_table = "user"
+
+class SessionAuth(models.Model):
+    id = models.AutoField(primary_key=True)
+    user = models.CharField(max_length=100,help_text="")
+    token = models.CharField(max_length=50,help_text="")
+    expiretime = models.IntegerField(help_text="超时时间")
+    class Meta:
+        db_table = "sessionauth"

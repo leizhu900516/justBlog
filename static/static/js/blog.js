@@ -184,5 +184,38 @@ layui.define(['element', 'form','laypage','jquery','laytpl'],function(exports){
 
 
   //输出test接口
-  exports('blog', {}); 
+  exports('blog', {});
+
+  //login -----------------
+  //监听提交--login
+  //自定义验证规则
+  form.verify({
+    title: function(value){
+      if(value.length < 1){
+        return '用户名不能为空';
+      }
+    }
+    ,pass: [/(.+){6,8}$/, '密码必须6到12位']
+    ,content: function(value){
+      layedit.sync(editIndex);
+    }
+  });
+
+  form.on('submit(loginbtn)', function(data){
+    $.ajax({
+      url:"/login/",
+      type:"post",
+      data:data.field,
+      dataType: "json",
+      success:function (data) {
+          if(data.code == 1){
+              layer.msg(data.msg)
+          }else if (data.code == 0){
+            window.location.href ="/manage/";
+          }
+      }
+    });
+    return false;
+  });
+
 });  

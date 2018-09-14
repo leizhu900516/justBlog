@@ -1,16 +1,19 @@
 from django.shortcuts import render_to_response
 from blog.models import Broadcast,Article,Message,User
-from django.http import JsonResponse,Http404,QueryDict
+from django.http import JsonResponse,Http404,QueryDict,HttpResponseRedirect
 from django.views.decorators.csrf import csrf_exempt
+
+
 import time
-from django.core.files.storage import default_storage
-from django.core.files.base import ContentFile
+# from django.core.files.storage import default_storage
+# from django.core.files.base import ContentFile
 import uuid
 import os
-
+from utils.util import encrypt,decrypt,login_auth
+from utils.session import session
 # Create your views here.
 
-
+@login_auth
 def manage(request):
     '''
     后台管理
@@ -18,6 +21,38 @@ def manage(request):
     :return:
     '''
     return render_to_response("manage/manage.html",locals())
+
+
+
+@csrf_exempt
+def login(request):
+    method = request.method
+    if method=="GET":
+        return render_to_response('login.html', locals())
+    elif method == "POST":
+        data = {}
+        params = request.POST
+        username = params.get("username")
+        password = params.get("passwd")
+        if username and password:
+            passwd = encrypt(password.encode("utf-8")).decode()
+            print(passwd)
+            isUser = User.objects.filter(name=username,passwd=passwd).first()
+            if isUser:
+                token = session.setter(username,3600*12)
+                data['code'] = 0
+                data['msg'] = '登录成功'
+                response = JsonResponse(data)
+                response.set_cookie("ticket",token,3600*12)
+                return response
+            else:
+                data['code'] = 1
+                data['msg'] = "用户名和密码错误"
+        else:
+            data['code'] = 1
+            data['msg'] = "用户名和密码不能为空"
+        return JsonResponse(data)
+
 def index(request):
     '''
     主页
@@ -178,3 +213,7 @@ def articlelist(request):
     data['message'] = ""
     data['count'] = articles.count()
     return JsonResponse(data)
+
+
+def test(request):
+    return render_to_response('test.html',locals())
