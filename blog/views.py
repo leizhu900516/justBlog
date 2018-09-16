@@ -150,6 +150,7 @@ def details(request,articleid):
     articleinfo = Article.objects.get(id=articleid)
     articleinfo.see_num+=1
     articleinfo.save()
+    commentlist = Comment.objects.filter(aid=articleid)[:5]
     return render_to_response('details.html',locals())
 
 def about(request):

@@ -71,10 +71,10 @@ class SessionAuth(models.Model):
 
 class Comment(models.Model):
     id = models.AutoField(primary_key=True)
-    aid = models.IntegerField()
-    comment = models.TextField()
+    aid = models.IntegerField(help_text="文章id")
+    comment = models.TextField(help_text="评论内容")
     addtimes = models.IntegerField()
-    uid = models.IntegerField()
-    zan = models.IntegerField()
+    uid = models.IntegerField(default=0)
+    zan = models.IntegerField(default=0,help_text="点赞数")
     class Meta:
         db_table = "comment"
