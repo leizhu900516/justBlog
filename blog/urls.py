@@ -19,6 +19,7 @@ from blog import views
 
 urlpatterns = [
     path('manage/', views.manage),#后台管理
+    path('user/', views.user),#用户管理
     path('login/', views.login),#登录管理
     path('index/', views.index), #主页
     path('about/', views.about), #关于

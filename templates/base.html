@@ -33,7 +33,8 @@
 					  <li class="layui-nav-item {% if request.path == '/about/' %}layui-this {% endif %}"><a href="/about">关于</a></li>
 					</ul>
 					<a href="/login/" class="personal pull-left">
-						<i class="layui-icon layui-icon-username"></i>
+                        {% if user %}{{ user }}{% else %}<i class="layui-icon layui-icon-username"></i>{% endif %}
+
 					</a>
 				</div>
 				<div class="mobile-nav pull-right" id="mobile-nav">

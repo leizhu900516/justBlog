@@ -34,7 +34,7 @@ def encrypt(data):
     :return:
     '''
     encrypted_text = aes.encrypt(pad(data))
-    return base64.b64encode(encrypted_text)
+    return base64.b64encode(encrypted_text).decode()
 
 
 def decrypt(data):

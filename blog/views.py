@@ -20,9 +20,32 @@ def manage(request):
     :param request:
     :return:
     '''
+    user = 'admin'
     return render_to_response("manage/manage.html",locals())
-
-
+@csrf_exempt
+def user(request):
+    '''
+     用户管理
+    :param request:
+    :return:
+    '''
+    data = {}
+    method = request.method
+    if method == "POST":
+        params = request.POST
+        print(params)
+        _passwd = params.get("newpasswd")
+        _passwdAgin = params.get("newpasswd")
+        if _passwd != _passwdAgin:
+            data['code'] = 1
+            data['msg'] = "两次密码不一样"
+        else:
+            User.objects.filter(name='admin').update(
+                passwd=encrypt(_passwd.encode('utf-8'))
+            )
+            data['code'] = 0
+            data['msg'] = "修改成功"
+    return JsonResponse(data)
 
 @csrf_exempt
 def login(request):

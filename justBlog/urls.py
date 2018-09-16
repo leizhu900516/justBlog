@@ -21,7 +21,7 @@ from justBlog import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include(urls)),
-    path('', views.home),
+    path('', views.home),#home or index
 
 ]
 

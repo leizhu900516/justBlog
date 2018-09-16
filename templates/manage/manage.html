@@ -12,7 +12,7 @@
     .chc-manage-items-this{border-left: 5px solid #1e9fff;color: #1e9fff!important;padding-left: 4px!important;font-weight: bold}
     .chc-manage-submit{float: right;margin-top: 12px;margin-bottom: 10px;margin-right: 10px;}
     .layui-form-item {padding: 5px!important;}
-    .layui-form-label{color: #666666}
+    .layui-form-label{color: #666666;font-size: 15px;}
     </style>
 {% endblock %}
 {% block content %}
@@ -109,7 +109,25 @@
                                     </div>
 
                                 </div>
-
+                                 <div id="usermanage" style="display: none">
+                                     <div>
+                                        <form class="layui-form" action="">
+                                          <div class="layui-form-item">
+                                            <label class="layui-form-label">新密码</label>
+                                            <div class="layui-input-block">
+                                              <input type="text" name="newpasswd" lay-verify="pass" autocomplete="off" placeholder="请输入新的密码" class="layui-input">
+                                            </div>
+                                          </div>
+                                          <div class="layui-form-item">
+                                            <label class="layui-form-label">再次输入密码</label>
+                                            <div class="layui-input-block">
+                                              <input type="text" name="newpasswdagain" lay-verify="pass" placeholder="请再次输入新的密码" autocomplete="off" class="layui-input">
+                                            </div>
+                                          </div>
+                                            <button class="layui-btn layui-btn-normal chc-manage-submit" lay-submit="" lay-filter="updateuserinfo">确认修改</button>
+                                        </form>
+                                     </div>
+                                 </div>
                             </div>
                         </div>
 
@@ -125,7 +143,7 @@ layui.use(['layedit','upload','form','layer','table'], function(){
   ,$ = layui.jquery
   ,form = layui.form
   ,layer = layui.layer
-      ,table = layui.table
+  ,table = layui.table
   ,upload = layui.upload;
     var coverimg = "";
   //普通图片上传
@@ -171,7 +189,13 @@ layui.use(['layedit','upload','form','layer','table'], function(){
       alert(layedit.getSelection(index));
     }
   };
-
+  //自定义验证规则
+  form.verify({
+    pass: [/(.+){6,12}$/, '密码必须6到12位']
+    ,content: function(value){
+      layedit.sync(editIndex);
+    }
+  });
   $('.site-demo-layedit').on('click', function(){
     var type = $(this).data('type');
     active[type] ? active[type].call(this) : '';
@@ -205,6 +229,29 @@ layui.use(['layedit','upload','form','layer','table'], function(){
           }
       })
     return false;
+  });
+  form.on('submit(updateuserinfo)',function (data) {
+      console.log(data)
+      if(data.field.newpasswdagain!=data.field.newpasswd){
+          layer.msg("两次密码不一样")
+          return false;
+      }
+      $.ajax({
+          url:"/user/",
+          type:"post",
+          data:data.field,
+          dataType: "json",
+          success:function (data) {
+              if(data.code == 0){
+                  layer.msg('修改成功',{time:2000},function () {
+                      window.location.reload();
+                  });
+              }else {
+                  layer.msg(data.msg)
+              }
+          }
+      });
+      return false
   });
   form.on('submit(articlesubmit)', function(data){
       console.log(data.field)
