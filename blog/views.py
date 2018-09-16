@@ -1,5 +1,5 @@
 from django.shortcuts import render_to_response
-from blog.models import Broadcast,Article,Message,User
+from blog.models import Broadcast,Article,Message,User,Comment
 from django.http import JsonResponse,Http404,QueryDict,HttpResponseRedirect
 from django.views.decorators.csrf import csrf_exempt
 
@@ -145,7 +145,11 @@ def details(request,articleid):
     :param request:
     :return:
     '''
+    articleid=articleid
+    comment = int(request.GET.get("comment",0))
     articleinfo = Article.objects.get(id=articleid)
+    articleinfo.see_num+=1
+    articleinfo.save()
     return render_to_response('details.html',locals())
 
 def about(request):
@@ -154,9 +158,42 @@ def about(request):
 def page_not_found(request):
     return render_to_response('404.html',locals())
 
-
+@csrf_exempt
 def comment(request):
-    return render_to_response('comment.html',locals())
+    '''
+    评论api
+    :param request:
+    :return:
+    '''
+    data = {}
+    params = request.POST
+    comment = params.get("comment")
+    _id = params.get("id")
+    _comment = Comment.objects.create(
+        aid=_id,
+        comment=comment,
+        addtimes=int(time.time()),
+        uid=0,
+    )
+    _comment.save()
+    data['code'] = 0
+    data['msg'] = ""
+    return JsonResponse(data)
+@csrf_exempt
+def good(request):
+    '''
+    点赞
+    :param request:
+    :return:
+    '''
+    data= {}
+    _id = request.POST.get("id")
+    _article = Article.objects.get(id=_id)
+    _article.zan_sum += 1
+    _article.save()
+    data['code'] = 0
+    data['msg'] = ""
+    return JsonResponse(data)
 @csrf_exempt
 def article(request):
     '''

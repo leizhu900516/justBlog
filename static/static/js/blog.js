@@ -87,7 +87,20 @@ layui.define(['element', 'form','laypage','jquery','laytpl'],function(exports){
 
   $(function () {
     $(".like").on('click',function () {
-     
+      var aid =$(this).attr("aid");
+      $.ajax({
+                url:"/zan/"
+                ,data:{"id":aid}
+                ,type:"post"
+                ,dataType:"json"
+                ,success:function (data) {
+                    if(data.code==0){
+                      console.log("ssss")
+                    }else {
+                        layer.msg(data.msg)
+                    }
+                }
+            })
       if(!($(this).hasClass("layblog-this"))){
         this.text = '已赞';
         $(this).addClass('layblog-this');
@@ -102,7 +115,7 @@ layui.define(['element', 'form','laypage','jquery','laytpl'],function(exports){
           icon: 6
           ,time: 1000
         })
-      } 
+      }
     });
   });
 

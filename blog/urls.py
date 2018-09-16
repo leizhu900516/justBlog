@@ -29,6 +29,7 @@ urlpatterns = [
     path('message/', views.messageBoard),#留言api
     path('broadcast/', views.broadcast), #公告api
     path('comment/', views.comment), #评论api
+    path('zan/', views.good), #评论api
     path('article/<int:articleid>.html', views.details),#文章详情页
     path('test/', views.test),
 ]

@@ -15,8 +15,8 @@
 								<img src="{{ i.coverimg }}" alt="" style="height: 200px;">
 							</div>
 							<div class="comment count">
-								<a href="details.html#comment">评论</a>
-								<a href="javascript:;" class="like">点赞</a>
+								<a href="/article/{{ i.id }}.html?comment=1">评论</a>
+								<a href="javascript:;" class="like" aid="{{ i.id }}">点赞</a>
 							</div>
 						</div>
                         {% endfor %}
@@ -52,5 +52,46 @@
 					</div>
 			</div>
 		</div>
+{% endblock %}
+{% block customjs %}
+    <script>
+    layui.use(['form'], function() {
+                $ = layui.jquery
+            $(function () {
+        $(".like").on('click',function () {
+            var aid = $(this).attr("aid");
+            $.ajax({
+                url:"/zan/"
+                ,data:{"id":aid}
+                ,type:"post"
+                ,dataType:"json"
+                ,success:function (data) {
+                    if(data.code==0){
+                      if(!($(this).hasClass("layblog-this"))){
+                        this.text = '已赞';
+                        $(this).addClass('layblog-this');
+                        $.tipsBox({
+                          obj: $(this),
+                          str: "+1",
+                          callback: function () {
+                          }
+                        });
+                        niceIn($(this));
+                        layer.msg('点赞成功', {
+                          icon: 6
+                          ,time: 1000
+                        })
+                      }
+                    }else {
+                        layer.msg(data.msg)
+                    }
+                }
+            })
+
+        });
+  });
+        });
+
+    </script>
 {% endblock %}
 

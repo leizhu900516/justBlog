@@ -13,6 +13,7 @@ class Article(models.Model):
     authorid  = models.IntegerField(help_text="作者id")
     coverimg = models.CharField(max_length=255,help_text="封面")
     status = models.SmallIntegerField(help_text="状态",default=0)
+    see_num = models.IntegerField(default=0,help_text="浏览量")
     class Meta:
         db_table = "article"
     def get_format_date(self):
@@ -66,3 +67,14 @@ class SessionAuth(models.Model):
     expiretime = models.IntegerField(help_text="超时时间")
     class Meta:
         db_table = "sessionauth"
+
+
+class Comment(models.Model):
+    id = models.AutoField(primary_key=True)
+    aid = models.IntegerField()
+    comment = models.TextField()
+    addtimes = models.IntegerField()
+    uid = models.IntegerField()
+    zan = models.IntegerField()
+    class Meta:
+        db_table = "comment"
